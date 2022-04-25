@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Registrate</title>
+        <meta charset="utf-8" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+        <script>
+            window.onload=function(){
+                let x=document.getElementById(2);
+                x.style.display="none";
+            }
+        showTab= function (a,b) {
+            let x=document.getElementById(a);
+            let y=document.getElementById(b);
+            x.style.display="none";
+            y.style.display="block";
+        }
+        VerificarCont=function(){
+                    let pass=document.getElementById("pass").value;
+                    let conf=document.getElementById("conf").value;
+                    if(pass!=conf){
+                        alert("La contraseña y su confirmación deben ser iguales");
+                    }
+                    else if(pass=="" || conf==""){
+                        alert("No todos los campos están rellenados")
+                    }
+                    else{
+                        VerificarVacio(1,2,2);
+                    }
+                }
+                VerificarVacio=function(a,b,c){
+                    let cont=0;
+                        for(i=1;i<=c;i++){
+                            let z=document.getElementById(a+"div"+i).value;
+                            if(z==""){
+                                cont++;
+                            }
+                        }
+                        if(cont!=0){
+                            alert("No todos los campos están rellenados");
+                        }
+                        else{
+                            showTab(a,b)
+                        }
+                }
+        </script>
+    </head>
+    <body class="container">
+        <form method="post" action="/Create">
+            <div id=1>
+            <h2>Datos Personales</h2>
+            <div>
+                <label class="form-label">Nombre</label>
+                <input name="usuario_nombre" type="text" class="form-control" id="1div1"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Contraseña:</label>
+                <input name="usuario_contraseña" type="password" class="form-control" id="pass"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Confirmar Contraseña:</label>
+                <input name="usuario_confcontraseña" type="password" class="form-control" id="conf"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Correo Electronico</label>
+                <input name="usuario_correo" type="text" class="form-control" id="1div2"/>
+            </div>
+            <a href="#" class="btn btn-success"onclick="VerificarCont()">Siguiente</a>       
+		</div>
+        <div id=2>
+            <h2>Tipo de usuario</h2>
+                <div>
+                    <label">Tipo de Usuario</label>
+                    <input type="radio" name="usuario_tipo" value="Freelancer"> Freelancer
+
+                    <input type="radio" name="usuario_tipo" value="Cliente"> Cliente
+                </div>
+                <a href="#" onclick="showTab(2,1)"class="btn btn-success">Anterior</a>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                
+        </div>
+
+        </form>
+
+    </body>
+</html>
