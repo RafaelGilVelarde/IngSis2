@@ -1,0 +1,29 @@
+{
+  "name": "ingii",
+  "version": "1.0.0",
+  "description": "Ing Soft 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/RafaelGilVelarde/IngSis2"
+  },
+  "keywords": [
+    "Freelance"
+  ],
+  "author": "Grupo 5",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.20.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.4.1"
+  }
+}
