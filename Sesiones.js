@@ -7,6 +7,8 @@ const app= express()
 app.use(express.static('assets'))
 app.set('view engine', 'ejs') 
 const PORT = 5555
+const http = require('http');
+const socketio = require('socket.io');
 
 app.use(session({
 	secret: 'FreelanceCliente',
@@ -381,6 +383,12 @@ app.post('/CrearTrabajos',async (req,res)=>{
         }
     })
 })
+
+app.get('/Chat',(req,res)=>{
+    res.render('Chat')
+})
+
+
 app.listen(PORT, () => {
 	console.log(`Se ha inicializado el servidor en el puerto ${PORT}`)
 })
