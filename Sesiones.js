@@ -8,19 +8,26 @@ app.use(express.static('assets'))
 app.set('view engine', 'ejs') 
 const PORT = 5555
 const http = require('http');
-const socketio = require('socket.io');
+//const socketio = require('socket.io');
 
 app.use(session({
 	secret: 'FreelanceCliente',
 	resave: false,
 	saveUninitialized: false
 }))
+//mensaje
+app.use((req, res, next) =>{
+    res.locals.message = req.session.message
+    delete req.session.message
+    next()
+})
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
 	extended: true
 }))
-
+//views y assets
 app.set('view engine', 'ejs')
+app.use(express.static('assets'))
 
 
 app.get('/Create',(req,res)=>{
@@ -75,17 +82,26 @@ app.get('/Login',(req,res)=>{
 app.post('/Login',async(req,res)=>{
     const corr = req.body.usuario_correo
     const cont = req.body.usuario_contraseña
+    const existe = null;
+    const valido = null;
 
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
         if (Usuario.Correo==corr){
             if (Usuario.Contraseña==cont) {
                 // Login correcto
-                
-                req.session.username=Usuario.Nombre
-                req.session.UsID=Usuario.UsID
-                req.session.Correo = corr
-                res.redirect('/Main')
+                // req.session.usuario = Usuario;
+                // req.session.username=Usuario.Nombre
+                // req.session.UsID=Usuario.UsID
+                // req.session.usuario_correo = Usuario.Correo
+                // req.session.usuario_tipo = Usuario.Tipo
+                req.session.usuario = Usuario;
+                if(req.session.usuario.Tipo=='Freelancer'){
+                    res.redirect('/Main')
+                }
+                else{
+                    res.redirect('/Main_cliente')    
+                }
             }else {
                 console.log("Contraseña o Usuario incorrecto")
             }
@@ -94,18 +110,50 @@ app.post('/Login',async(req,res)=>{
 
 })
 app.get('/Trabajos',async(req,res)=>{
+    if(req.session.usuario==null){
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Freelancer"){
+        res.redirect('/Main')
+    }
+    else{
+        const usuario = req.session.usuario;
     const trabajos = await db.Trabajo.findAll({
         order : [
             ['id', 'DESC']
         ]
     });    
     res.render('Visualizar Trabajos', {
-        trabajo : trabajos
+        trabajo : trabajos,
+        usuario: usuario
     })
+    }
+    
 
 })
 app.get('/Main',(req,res)=>{
-    res.render('Main')
+    if(req.session.usuario==null){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No has iniciado sesion'
+        }
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Cliente"){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No tienes permisos suficientes'
+        }
+        res.redirect('/Main_cliente')
+    }
+    else{
+    usuario = req.session.usuario
+    res.render('Main',{usuario: usuario})
+    }
 })
 app.post('/Main',async(req,res)=>{
     let Sel= req.body.sel
@@ -132,8 +180,75 @@ app.post('/Main',async(req,res)=>{
             break;
     }
 })
+app.get('/Main_Cliente',(req,res)=>{
+    if(req.session.usuario==null){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No has iniciado sesion'
+        }
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Freelancer"){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No tienes permisos suficientes'
+        }
+        res.redirect('/Main')
+    }
+    else{
+    usuario = req.session.usuario;
+    res.render('Main_Cliente',{usuario: usuario})
+    }
+})
+app.post('/Main_Cliente',async(req,res)=>{
+    let Sel= req.body.sel
+    console.log(Sel)
+    switch (Sel){
+        case "1":
+            res.redirect('/Trabajos')
+            break;
+        case "2":
+            res.redirect('/Solicitantes')
+            break;
+        case "3":
+            res.redirect('/CrearTrabajos')
+            break
+        case "4":
+            res.redirect('/Conexiones')
+            break
+        case "5":
+            res.redirect('/Solicitudes')
+            break
+        case "6":
+            req.session.destroy()
+            res.redirect('/Login')
+            break;
+    }
+})
 app.get('/CrearTrabajos',(req,res)=>{
+    if(req.session.usuario==null){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No has iniciado sesion'
+        }
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Cliente"){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No tienes permisos suficientes'
+        }
+        res.redirect('/Main_cliente')
+    }
+    else{
     res.render('Crear Trabajos')
+    }
 })
 app.post('/CrearTrabajos',async (req,res)=>{
     const titulo=req.body.trabajo_nombre
@@ -151,7 +266,7 @@ app.post('/CrearTrabajos',async (req,res)=>{
                     'Trabajos':Sequelize.fn('array_append', Sequelize.col('Trabajos'), titulo),
                 }
             );
-            res.redirect('/Main')
+            res.redirect('/Solicitantes')
         }
     })
 })
@@ -355,37 +470,19 @@ app.get('/Solicitudes',async(req,res)=>{
 app.get('/Conexiones',async(req,res)=>{
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
-        if (req.session.username==Usuario.Nombre){
+        if (req.session.usuario==Usuario.Nombre){
             res.render('Conexiones', {
                 Conexiones: Usuario.Conexiones
             })
         }
     })    
 })
-app.post('/CrearTrabajos',async (req,res)=>{
-    const titulo=req.body.trabajo_nombre
-    const desc=req.body.trabajo_descripcion
-    await db.Trabajo.create({
-                Titulo: titulo,
-                Descripcion: desc,
-                Freelancer: req.session.username,
-    })    
-    const Contar= await db.Usuario.findAll();
-    Contar.forEach( (Usuario) => {
-        if (Usuario.Correo==req.session.Correo){ 
-            console.log(req.session.Correo)
-            Usuario.update(
-                {
-                    'Trabajos':Sequelize.fn('array_append', Sequelize.col('Trabajos'), titulo),
-                }
-            );
-            res.redirect('/Main')
-        }
-    })
-})
 
 app.get('/Chat',(req,res)=>{
     res.render('Chat')
+})
+app.get('/',(req,res)=>{
+    res.render('Ingresar')
 })
 
 

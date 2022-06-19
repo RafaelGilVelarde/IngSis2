@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Krona One', Impact;
+
+}
+.my-custom-scrollbar {
+    position: relative;
+    height: 350px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+body{
+    background-image: url("/images/Freelancer.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation: slide 30s infinite;
+}
+#registrarse{
+    color: gold;
+}
+
+#btnLogInBrilla{
+    position: relative;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    background: #111;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#btnLogInBrilla:hover{
+    color: black;
+    font-weight: bold;
+    background:  linear-gradient(90deg, #faf86d, #f5ce62, #f1b83b, #fffb00);
+    background-size: 400%;
+}
+
+
+
+#btnLogInBrilla:before{
+    content: '';
+    position: absolute;
+    background: inherit;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left:-5px;
+    border-radius: 15px;
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+
+#btnLogInBrilla:hover:before{
+    opacity:1;
+    z-index: -1;
+}
+
+#btnLogInBrilla:hover{
+    z-index: 1;
+    animation: glow 8s linear infinite;
+}

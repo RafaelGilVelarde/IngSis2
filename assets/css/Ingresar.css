@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&display=swap');
+body{
+    background-image: url("/images/Freelancer.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Krona One', Impact;
+
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 350px;
+    overflow: auto;
+}
+
+section{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    
+}
+
+section .text-box1 {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform:  translate(-50%,-50%);
+    color: white;
+}
+
+section .text-box2{
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform:  translate(-50%,-50%);
+    color: white
+}
+
+section .text-box3{
+    position: absolute;
+    left: 50%;
+    top: 80%;
+    transform:  translate(-50%,-50%);
+    color: white
+}
+
+section .text-box4{
+    position: absolute;
+    left: 50%;
+    top: 90%;
+    transform:  translate(-50%,-50%);
+    color: white
+}
+
+section h3{
+    margin-top: 7px;
+}
+
+a{
+    position: absolute;
+    color: yellow;
+    left: 100%;
+    top: 50%;
+    transform:  translate(-50%,-50%);
+}
+
+#registrarse{
+    position: absolute;
+    color: yellow;
+    left: 100%;
+    top: 50%;
+    transform:  translate(-50%,-50%);
+}
+
+#Acceder{
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background: rgb(129, 0, 0);
+    color: #fff;
+    font-size: 45px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#Acceder:hover{
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    background:   #db9705;
+    background-size: 400%;
+}
+
+#Acceder::before{
+    content: '';
+    background: inherit;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left:-5px;
+    border-radius: 15px;
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
