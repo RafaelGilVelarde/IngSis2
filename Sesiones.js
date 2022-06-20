@@ -104,6 +104,12 @@ app.post('/Login',async(req,res)=>{
                 }
             }else {
                 console.log("Contraseña o Usuario incorrecto")
+                req.session.message = {
+                    type: 'danger',
+                    intro: 'ERROR',
+                    message: ' - Contraseña o Usuario incorrecto'
+                }
+                res.redirect('/Login')
             }
         }
     })
@@ -457,6 +463,24 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
     res.redirect('/Solicitantes')    
 })
 app.get('/Solicitudes',async(req,res)=>{
+    if(req.session.usuario==null){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No has iniciado sesion'
+        }
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Freelancer"){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No tienes permisos suficientes'
+        }
+        res.redirect('/Main')
+    }
+    else{
     const Contar= await db.Usuario.findAll();
     const Trab=await db.Trabajo.findAll();
     Contar.forEach( (Usuario) => {
@@ -466,9 +490,28 @@ app.get('/Solicitudes',async(req,res)=>{
                 Freelancer:Trab
             })
         }
-    })    
+    })  
+}  
 })
 app.get('/Conexiones',async(req,res)=>{
+    if(req.session.usuario==null){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No has iniciado sesion'
+        }
+        res.redirect('/Login')
+
+    }
+    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Cliente"){
+        req.session.message = {
+            type: 'danger',
+            intro: 'ERROR',
+            message: ' - No tienes permisos suficientes'
+        }
+        res.redirect('/Main_cliente')
+    }
+    else{
     console.log("Conexiones")
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
@@ -479,13 +522,14 @@ app.get('/Conexiones',async(req,res)=>{
             })
         }
     })    
+}
 })
 
 app.get('/Chat',(req,res)=>{
     res.render('Chat')
 })
 app.get('/',(req,res)=>{
-    res.render('Ingresar')
+    res.redirect('/Login')
 })
 
 
