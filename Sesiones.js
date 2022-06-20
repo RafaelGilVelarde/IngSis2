@@ -102,7 +102,9 @@ app.post('/Login',async(req,res)=>{
                 else{
                     res.redirect('/Main_cliente')    
                 }
-            }else {
+            }
+            
+            else {
                 console.log("Contraseña o Usuario incorrecto")
                 req.session.message = {
                     type: 'danger',
@@ -111,6 +113,14 @@ app.post('/Login',async(req,res)=>{
                 }
                 res.redirect('/Login')
             }
+        }
+        else{
+            req.session.message = {
+                type: 'danger',
+                intro: 'ERROR',
+                message: ' - Ingresa los datos correctamente.'
+            }
+            res.redirect('/Login')
         }
     })
 
@@ -186,6 +196,17 @@ app.post('/Main',async(req,res)=>{
             break;
     }
 })
+app.get('/CerrarSesion',(req,res)=>{
+    req.session.message = {
+        type: 'success',
+        intro: 'DONE',
+        message: ' - Has cerrado sesion satisfactoriamente.'
+    }
+    req.session.usuario=null;
+    res.redirect('/Login')
+}
+
+)
 app.get('/Main_Cliente',(req,res)=>{
     if(req.session.usuario==null){
         req.session.message = {
