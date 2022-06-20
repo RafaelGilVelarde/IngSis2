@@ -91,7 +91,7 @@ app.post('/Login',async(req,res)=>{
             if (Usuario.Contraseña==cont) {
                 // Login correcto
                 // req.session.usuario = Usuario;
-                // req.session.username=Usuario.Nombre
+                // req.session.usuario.Nombre=Usuario.Nombre
                 // req.session.UsID=Usuario.UsID
                 // req.session.usuario_correo = Usuario.Correo
                 // req.session.usuario_tipo = Usuario.Tipo
@@ -256,7 +256,7 @@ app.post('/CrearTrabajos',async (req,res)=>{
     await db.Trabajo.create({
                 Titulo: titulo,
                 Descripcion: desc,
-                Freelancer: req.session.username,
+                Freelancer: req.session.usuario.Nombre,
     })    
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
@@ -266,7 +266,7 @@ app.post('/CrearTrabajos',async (req,res)=>{
                     'Trabajos':Sequelize.fn('array_append', Sequelize.col('Trabajos'), titulo),
                 }
             );
-            res.redirect('/Solicitantes')
+            res.redirect('/Main')
         }
     })
 })
@@ -279,11 +279,11 @@ app.get('/Solicitar/:nom/:titulo',async(req,res)=>{
             Usuario.update(
                 {
                     'Pendientes':Sequelize.fn('array_append', Sequelize.col('Pendientes'), titulo),
-                    'Solicitantes':Sequelize.fn('array_append', Sequelize.col('Solicitantes'), req.session.username),
+                    'Solicitantes':Sequelize.fn('array_append', Sequelize.col('Solicitantes'), req.session.usuario.Nombre),
                 }
             );
         }
-        if(req.session.username==Usuario.Nombre){
+        if(req.session.usuario.Nombre==Usuario.Nombre){
             Usuario.update(
                 {
                     'Solicitudes':Sequelize.fn('array_append', Sequelize.col('Solicitudes'), titulo),
@@ -292,12 +292,12 @@ app.get('/Solicitar/:nom/:titulo',async(req,res)=>{
         }
     })
                 
-    res.redirect('/Main')
+    res.redirect('/Main_cliente')
 })
 app.get('/Solicitantes',async(req,res)=>{
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
-        if (req.session.username==Usuario.Nombre){
+        if (req.session.usuario.Nombre==Usuario.Nombre){
             res.render('Solicitantes', {
                 Trabajos: Usuario.Pendientes,
                 Solicitantes: Usuario.Solicitantes
@@ -312,7 +312,7 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
     console.log(Sel)
     const Usuario=await db.Usuario.findOne({
         where:{
-            Nombre: req.session.username
+            Nombre: req.session.usuario.Nombre
         }
     });
 
@@ -323,6 +323,7 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
     })
 
     const Soli=Con.Solicitudes
+    const SoliCont=Soli.length
     if(Sel=="Aceptar"){
         await Usuario.update(
             {
@@ -333,7 +334,7 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
             'Conexiones':Sequelize.fn('array_append', Sequelize.col('Conexiones'), Usuario.Nombre)
         })
     }
-    for(let i=0;i<Soli.length;i++){
+    for(let i=0;i<SoliCont;i++){
         if(Soli[i]==Pen[ind]){
             Soli.splice(ind,1)
         }
@@ -459,7 +460,7 @@ app.get('/Solicitudes',async(req,res)=>{
     const Contar= await db.Usuario.findAll();
     const Trab=await db.Trabajo.findAll();
     Contar.forEach( (Usuario) => {
-        if (req.session.username==Usuario.Nombre){
+        if (req.session.usuario.Nombre==Usuario.Nombre){
             res.render('Solicitudes', {
                 Solicitudes: Usuario.Solicitudes,
                 Freelancer:Trab
@@ -468,11 +469,13 @@ app.get('/Solicitudes',async(req,res)=>{
     })    
 })
 app.get('/Conexiones',async(req,res)=>{
+    console.log("Conexiones")
     const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
-        if (req.session.usuario==Usuario.Nombre){
+        if (req.session.usuario.Nombre==Usuario.Nombre){
             res.render('Conexiones', {
-                Conexiones: Usuario.Conexiones
+                Conexiones: Usuario.Conexiones,
+                Tipo: Usuario.Tipo
             })
         }
     })    

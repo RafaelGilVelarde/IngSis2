@@ -37,6 +37,10 @@
             </tbody>
         </table>
     </form>
-    <a href="Main_cliente" class="btn btn-success" id="btnLogInBrilla">Regresar</a>
+    <%if (Tipo!="Freelancer"){%>
+        <a href="Main_cliente" class="btn btn-success" id="btnLogInBrilla">Regresar</a>
+    <%}else{%>
+    <a href="Main" class="btn btn-success" id="btnLogInBrilla">Regresar</a><%}%>
+
 </body>
 </html>

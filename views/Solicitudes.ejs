@@ -30,16 +30,18 @@
                     <tbody>
                         <tr>
                         <%if (Solicitudes!=null){%>
-                            <% Solicitudes.forEach( (trabajo) => { %>
-                            <td><%= trabajo%></td>                    
-                            <% }) %>
-                            <% Solicitudes.forEach( (trabajo) => { %>                            
+                            <td><% Solicitudes.forEach( (trabajo) => { %>
+                            <%= trabajo%> 
+                            <br>                   
+                            <% }) %></td>
+                            <td><% Solicitudes.forEach( (trabajo) => { %>                            
                                 <% Freelancer.forEach( (trabajos) => { %>                            
                                     <% if(trabajos.Titulo==trabajo){%>
-                                        <td><%=trabajos.Freelancer%></td>                     
+                                        <%=trabajos.Freelancer%>
+                                        <br>                 
                                         <%} %>
                                 <% }) %>                         
-                            <% }) %>
+                            <% }) %></td>
 
                         <%}else{%>
                             <td>No has solicitado trabajos</td>

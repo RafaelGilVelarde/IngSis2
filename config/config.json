@@ -1,22 +1,22 @@
 {
   "development": {
-    "username": "ing_sis2",
-    "password": null,
-    "database": "ing_sis2",
+    "username": "IngSoft2",
+    "password": "123",
+    "database": "App",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
+    "username": "IngSoft2",
+    "password": "123",
+    "database": "App",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "IngSoft2",
+    "password": "123",
+    "database": "App",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
