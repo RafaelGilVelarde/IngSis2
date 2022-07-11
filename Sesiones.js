@@ -86,16 +86,60 @@ app.get('/Login',(req,res)=>{
     res.render('Ingresar')
 })
 app.post('/Login',async(req,res)=>{
-    req.session.destroy()
     const corr = req.body.usuario_correo
     const cont = req.body.usuario_contraseña
     const existe = null;
     const valido = null;
+    if(req.session.correo!=null && req.session.pregunta!=null){
+        req.session.correo.destroy()
+        req.session.pregunta.destroy()
+    }
+    const Usuario=await db.Usuario.findOne({
+        where:{
+            Contraseña:cont,
+            Correo:corr
+        }
+    })
+    if(Usuario!=null){
+        console.log("Correcto")
 
-    const Contar= await db.Usuario.findAll();
+        // Login correcto
+        // req.session.usuario = Usuario;
+        // req.session.usuario.Nombre=Usuario.Nombre
+        // req.session.UsID=Usuario.UsID
+        // req.session.usuario_correo = Usuario.Correo
+        // req.session.usuario_tipo = Usuario.Tipo
+        req.session.usuario = Usuario;
+        if(req.session.usuario.Tipo=='Freelancer'){
+            res.redirect('/Main')
+            return
+        }
+        else{
+            res.redirect('/Main_cliente')
+            return    
+        }
+    }
+    else{
+        console.log(Usuario.Contraseña)
+                console.log(cont)
+                console.log("Contraseña o Usuario incorrecto")
+                req.session.message = {
+                    type: 'danger',
+                    intro: 'ERROR',
+                    message: ' - Contraseña o Usuario incorrecto'
+                }
+                res.redirect('/Login')
+    }
+    /*const Contar= await db.Usuario.findAll();
     Contar.forEach( (Usuario) => {
         if (Usuario.Correo==corr){
+
             if (Usuario.Contraseña==cont) {
+                console.log("Correcto")
+                if(req.session.correo!=null && req.session.pregunta!=null){
+                    req.session.correo.destroy()
+                    req.session.pregunta.destroy()
+                }
                 // Login correcto
                 // req.session.usuario = Usuario;
                 // req.session.usuario.Nombre=Usuario.Nombre
@@ -105,13 +149,17 @@ app.post('/Login',async(req,res)=>{
                 req.session.usuario = Usuario;
                 if(req.session.usuario.Tipo=='Freelancer'){
                     res.redirect('/Main')
+                    return
                 }
                 else{
-                    res.redirect('/Main_cliente')    
+                    res.redirect('/Main_cliente')
+                    return    
                 }
             }
             
             else {
+                console.log(Usuario.Contraseña)
+                console.log(cont)
                 console.log("Contraseña o Usuario incorrecto")
                 req.session.message = {
                     type: 'danger',
@@ -129,7 +177,7 @@ app.post('/Login',async(req,res)=>{
             }
             res.redirect('/Login')
         }
-    })
+    })*/
 
 })
 app.get('/Recuperar/:Fase',(req,res)=>{
@@ -353,18 +401,20 @@ app.post('/CrearTrabajos',async (req,res)=>{
                 Titulo: titulo,
                 Descripcion: desc,
                 Freelancer: req.session.usuario.Nombre,
-    })    
-    const Contar= await db.Usuario.findAll();
-    Contar.forEach( (Usuario) => {
-        if (Usuario.Correo==req.session.Correo){ 
-            Usuario.update(
-                {
-                    'Trabajos':Sequelize.fn('array_append', Sequelize.col('Trabajos'), titulo),
-                }
-            );
-            res.redirect('/Main')
+    })
+    Usuario=await db.Usuario.findOne({
+        where:{
+            Correo:req.session.usuario.Correo
         }
     })
+    console.log(Usuario.Correo)
+    await Usuario.update(
+        {
+            'Trabajos':Sequelize.fn('array_append', Sequelize.col('Trabajos'), titulo),
+        }
+    );
+    res.redirect('/Main')
+    
 })
 app.get('/Solicitar/:nom/:titulo',async(req,res)=>{
     const nom = req.params.nom
@@ -419,7 +469,13 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
     })
 
     const Soli=Con.Solicitudes
-    const SoliCont=Soli.length
+    let SoliCont
+    if(Soli!=null){
+        SoliCont=Soli.length
+    }
+    else{
+        SoliCont=0
+    }
     if(Sel=="Aceptar"){
         await Usuario.update(
             {
@@ -497,14 +553,14 @@ app.get('/Conexiones',async(req,res)=>{
         res.redirect('/Login')
 
     }
-    else if(req.session.usuario!=null && req.session.usuario.Tipo=="Cliente"){
+    /*else if(req.session.usuario!=null && req.session.usuario.Tipo=="Cliente"){
         req.session.message = {
             type: 'danger',
             intro: 'ERROR',
             message: ' - No tienes permisos suficientes'
         }
         res.redirect('/Main_cliente')
-    }
+    }*/
     else{
     console.log("Conexiones")
     const Contar= await db.Usuario.findAll();
@@ -517,6 +573,17 @@ app.get('/Conexiones',async(req,res)=>{
         }
     })    
 }
+})
+app.get('/NumPago/:Nom',async(req,res)=>{
+    const con=await db.Usuario.findOne({
+        where:{
+            Nombre:req.params.Nom
+        }
+    })
+    res.render('NumPago',{
+        Conexion: con.Nombre,
+        Num: con.Celular
+    })
 })
 app.get('/Consultas',async(req,res)=>{
     const Consultas=await db.Consultas.findAll({

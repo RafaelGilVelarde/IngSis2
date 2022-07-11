@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "ing_sis2",
-    "password": "ing_sis2",
-    "database": "ing_sis2",
+    "username": "IngSoft2",
+    "password": "123",
+    "database": "App",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
