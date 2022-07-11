@@ -4,7 +4,7 @@
   "description": "Ing Soft 2",
   "main": "index.js",
   "scripts": {
-    "test": "run"
+    "start": "node Sesiones.js"
   },
   "repository": {
     "type": "git",
