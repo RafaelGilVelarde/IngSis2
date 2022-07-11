@@ -28,13 +28,15 @@
                         <%if (Conexiones!=null){%>
                         <tr> 
                             <% if (Tipo=="Freelancer"){ %>
-                            <% Conexiones.forEach( (trabajo) => { %>                     
-                                <td><%= trabajo%></td>                        
-                            <% }) %>
+                            <td><% Conexiones.forEach( (trabajo) => { %>                     
+                                <%= trabajo%>
+                                <br>                        
+                            <% }) %></td>
                             <%}else{%>
-                                <% Conexiones.forEach( (trabajo) => { %>                     
-                                    <td><a href="/NumPago/<%= trabajo%>"><%= trabajo%></a></td>     
-                                <% }) %>                    
+                                <td><% Conexiones.forEach( (trabajo) => { %>                     
+                                    <a href="/NumPago/<%= trabajo%>"><%= trabajo%></a>
+                                    <br>     
+                                <% }) %></td>                    
                             <%}%>        
                         <%}else{%>
                             <td>No tienes ninguna conexion</td>
