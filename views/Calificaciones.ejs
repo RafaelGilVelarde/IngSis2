@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Conexiones</title>
+        <title>Calificaciones de <%= Nombre %></title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/index.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -14,33 +14,32 @@
                 <strong><%=message.intro%></strong><%=message.message%>
             </div>
         <% } %>
-        <h2>Lista</h2>
+        
+        <h2>Calificaciones de <%= Nombre %></h2>
 
         <form>            
                 <table class="display nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Conexion</th>
+                            <th>Calificador</th>
+                            <th>Calificacion</th>
+                            <th>Comentario</th>
                         </tr>
                     
                     </thead>
                     <tbody>
-                        <%if (Conexiones!=null){%>
-                        <tr> 
-                            <% Conexiones.forEach( (trabajo) => { %>                     
-                            <td><%= trabajo%></td>                        
-                            <% }) %>      
-                        <%}else{%>
-                            <td>No tienes ninguna conexion</td>
-                        <%}%>
-                    </tr>   
+                        <% calificacion.forEach( (calificacion) => { %>
+                            <%if (calificacion.UsuarioID==ID){%>
+                                <tr>
+                                    <td><%= calificacion.Calificador %></td>
+                                    <td><%= calificacion.Calificacion %></td>
+                                    <td><%= calificacion.Comentario %></td>
+                                </tr>                                
+                            <%}%>
+                        <% }) %>   
             </tbody>
         </table>
     </form>
-    <%if (Tipo!="Freelancer"){%>
-        <a href="Main_cliente" class="btn btn-success" id="btnLogInBrilla">Regresar</a>
-    <%}else{%>
-    <a href="Main" class="btn btn-success" id="btnLogInBrilla">Regresar</a><%}%>
-
+    <a href="/Calificar" class="btn btn-success" id="btnLogInBrilla">Regresar</a>
 </body>
 </html>

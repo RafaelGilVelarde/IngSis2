@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Iniciar Sesión</title>
+        <title>Responder Consulta</title>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="/css/Ingresar.css">
-        <script src="/js/Ingresar.js"></script>
+        <link rel="stylesheet" href="/css/index.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-
+        
     </head>
     <body class="container">
-        <%- include('Ingresar_header') %>
         
         <% if(message) {%>
             <div id="msgErrorEdicionU" class="alert alert-<%=message.type%>">
@@ -18,19 +16,16 @@
             </div>
         <% } %>
         
-        <form method="post" action="/Login">
-            
-            <div>
-                <label class="form-label">Correo</label>
-                <input name="usuario_correo" type="text" class="form-control"/>
-            </div>
-            <div class="mb-2">
-                <label class="form-label">Contraseña:</label>
-                <input name="usuario_contraseña" type="password" class="form-control"/>
-            </div>
-            <button type="submit" class="btn btn-success" id="Acceder">Ingresar</button> 
+        <form method="post" action="/Consultas/<%= id %>">
+            <h1>Responder Consulta</h1>
+                <div>
+                    <p><label class="form-label">Respuesta:</label></p>
+                    <textarea name="consulta_respuesta" rows="5" cols="60"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success" id="btnLogInBrilla">Guardar</button>
+                <a href="/Consultas">Regresar</a>
+                
+        </div>
         </form>
-        <a href="/Recuperar/0" id="registrarse" >Me olvide mi contraseña</a>
-
     </body>
 </html>

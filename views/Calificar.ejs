@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Conexiones</title>
+        <title>Calificar</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/index.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -14,33 +14,39 @@
                 <strong><%=message.intro%></strong><%=message.message%>
             </div>
         <% } %>
-        <h2>Lista</h2>
+        
+        <h2>Calificar</h2>
 
-        <form>            
+        <form method="post" action="/Calificar">            
                 <table class="display nowrap" style="width:100%">
                     <thead>
+                        <button type="submit" class="btn btn-success" id="btnLogInBrilla">Guardar</button>
                         <tr>
-                            <th>Conexion</th>
+                            <th>Usuario</th>
+                            <th>Tipo</th>
+                            <th>Calificar</th>        
+                            <th>Comentario</th>
                         </tr>
                     
                     </thead>
                     <tbody>
-                        <%if (Conexiones!=null){%>
-                        <tr> 
-                            <% Conexiones.forEach( (trabajo) => { %>                     
-                            <td><%= trabajo%></td>                        
-                            <% }) %>      
-                        <%}else{%>
-                            <td>No tienes ninguna conexion</td>
-                        <%}%>
-                    </tr>   
+                        <% usuario.forEach( (usuario) => { %>
+                            <% if(usuario.id!=ses){%>
+                            <tr>
+                                <td><a href="/Calificaciones/<%= usuario.id %>"><%= usuario.Nombre %></a></td>
+                                <td><%= usuario.Tipo %></td>
+                                <td><input name="<%= usuario.id %>" type="text" class="e-input-group e-small"/>/10</td>
+                                <td><textarea name="<%= usuario.id %> comentario" type="text" rows="3"></textarea></td>
+                            </tr>
+                            <%}%>                                
+                        <% }) %>   
             </tbody>
         </table>
     </form>
+
     <%if (Tipo!="Freelancer"){%>
         <a href="Main_cliente" class="btn btn-success" id="btnLogInBrilla">Regresar</a>
     <%}else{%>
     <a href="Main" class="btn btn-success" id="btnLogInBrilla">Regresar</a><%}%>
-
 </body>
 </html>

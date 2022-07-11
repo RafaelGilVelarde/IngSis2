@@ -20,6 +20,15 @@ module.exports = {
       Tipo: {
         type: Sequelize.STRING
       },
+      Pregunta: {
+        type: Sequelize.STRING
+      },
+      Respuesta: {
+        type: Sequelize.STRING
+      },
+      Celular: {
+        type: Sequelize.INTEGER
+      },
       Conexiones: {
         type: Sequelize.ARRAY(Sequelize.STRING)
       },

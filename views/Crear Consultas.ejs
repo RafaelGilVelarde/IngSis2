@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Crear Trabajo</title>
+        <title>Crear Consulta</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/index.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -9,7 +9,6 @@
         
     </head>
     <body class="container">
-        <%- include('freelancer_header') %>
         
         <% if(message) {%>
             <div id="msgErrorEdicionU" class="alert alert-<%=message.type%>">
@@ -17,22 +16,19 @@
             </div>
         <% } %>
         
-        <form method="post" action="/CrearTrabajos">
-            <h1>Subir Trabajo</h1>
+        <form method="post" action="/CrearConsulta">
+            <h1>Crear Consulta</h1>
                 <div>
-                    <label">Titulo del Trabajo</label>
-                    <label class="form-label">Freelancer:</label>
-                    <input type="text" name="trabajo_nombre" class="form-control"/>
+                    <label">Asunto</label>
+                    <input type="text" name="consulta_asunto" class="form-control"/>
 
                     <p><label class="form-label">Descripcion:</label></p>
-                    <textarea name="trabajo_descripcion" rows="5" cols="60"></textarea>
+                    <textarea name="consulta_descripcion" rows="5" cols="60"></textarea>
                 </div>
                 <button type="submit" class="btn btn-success" id="btnLogInBrilla">Guardar</button>
-                <a href="/Main">Regresar</a>
+                <a href="/Consultas">Regresar</a>
                 
         </div>
-
         </form>
-
     </body>
 </html>

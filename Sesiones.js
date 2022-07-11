@@ -40,6 +40,9 @@ app.post('/Create',async (req,res)=>{
     const corr=req.body.usuario_correo
     const cont=req.body.usuario_contraseña
     const tipo=req.body.usuario_tipo
+    const pregunta=req.body.usuario_pregunta
+    const respuesta=req.body.usuario_respuesta
+    const celular=req.body.usuario_celular
     let count=0
     try{
         const Contar= await db.Usuario.findAll()
@@ -57,6 +60,9 @@ app.post('/Create',async (req,res)=>{
                 Contraseña: cont,
                 Nombre: nom,
                 Tipo: tipo,
+                Pregunta: pregunta,
+                Respuesta: respuesta,
+                Celular:celular
                 //UsID:Count
             })    
             res.redirect('/Login')
@@ -80,6 +86,7 @@ app.get('/Login',(req,res)=>{
     res.render('Ingresar')
 })
 app.post('/Login',async(req,res)=>{
+    req.session.destroy()
     const corr = req.body.usuario_correo
     const cont = req.body.usuario_contraseña
     const existe = null;
@@ -108,6 +115,54 @@ app.post('/Login',async(req,res)=>{
         }
     })
 
+})
+app.get('/Recuperar/:Fase',(req,res)=>{
+    const fase=req.params.Fase
+    if(fase==0){
+        req.session.destroy()
+        res.render('Recuperar Contraseña',{
+            Fase: fase,
+        })
+    }
+    else{
+        res.render('Recuperar Contraseña',{
+            Fase: fase,
+            Pregunta: req.session.pregunta,
+        })
+    }
+    console.log(fase)
+
+})
+app.post('/Recuperar/:Fase',async(req,res)=>{
+    if(req.params.Fase==0){
+        const Usuario=await db.Usuario.findOne({
+            where:{
+                Correo:req.body.usuario_correo
+            }
+        })
+        if(Usuario!=null){
+            req.session.correo=Usuario.Correo
+            req.session.pregunta=Usuario.Pregunta
+            res.redirect('/Recuperar/1')
+        }
+        else{
+            console.log(Usuario)
+            req.session.message = {
+                type: 'danger',
+                intro: 'ERROR',
+                message: ' - No existe esta cuenta'
+            }
+            res.redirect('/Recuperar/0')
+        }
+    }
+    else{
+        const Usuario=await db.Usuario.findOne({
+            where:{
+                Correo:req.session.correo
+            }
+        })
+        Usuario.RecuperarContraseña(req,res)
+    }
 })
 app.get('/Trabajos',async(req,res)=>{
     if(req.session.usuario==null){
@@ -178,6 +233,13 @@ app.post('/Main',async(req,res)=>{
             req.session.destroy()
             res.redirect('/Login')
             break;
+        case "7":
+            res.redirect('/Consultas')
+            break;
+        case "8":
+            console.log('AAA')
+            res.redirect('/Calificar')
+            break;
     }
 })
 app.get('/Main_Cliente',(req,res)=>{
@@ -215,16 +277,23 @@ app.post('/Main_Cliente',async(req,res)=>{
             break;
         case "3":
             res.redirect('/CrearTrabajos')
-            break
+            break;
         case "4":
             res.redirect('/Conexiones')
-            break
+            break;
         case "5":
             res.redirect('/Solicitudes')
-            break
+            break;
         case "6":
             req.session.destroy()
             res.redirect('/Login')
+            break;
+        case "7":
+            res.redirect('/Consultas')
+            break;
+        case "8":
+            console.log('AAA')
+            res.redirect('/Calificar')
             break;
     }
 })
@@ -357,103 +426,7 @@ app.get('/Solicitantes/:index/:Seleccion',async(req,res)=>{
             })
             await Usuario.save();
             console.log("P: "+Usuario.Pendientes)
-            console.log("S: : "+Usuario.Solicitantes)
-            /*let cont=Usuario.Solicitantes.length
-            let Pen=Usuario.Pendientes
-            let So=Usuario.Solicitantes
-            for(let i=0;i<cont;i++){
-                if(Usuario.Solicitantes[i]==Sol && Usuario.Pendientes[i]==Trab){
-                    console.log(Usuario.Solicitantes[i]+": "+i)
-                    console.log(Usuario.Pendientes[i]+": "+i)
-                    Pen.splice(i,1)
-                    So.splice(i,1)
-                    console.log(So[i]+":Splice "+i)
-                    console.log(Pen[i]+":Splice "+i)
-                }
-            }            
-            console.log(Pen)
-            console.log(So)  
-            Usuario.Pendientes=Pen
-            Usuario.Solicitantes=So
-            await Usuario.save()*/
-        
-            /*
-            Usuario.Solicitantes.forEach((Solic)=>{   
-                    i++             
-                    if(Solic==Sol){
-                        Usuario.Pendientes.forEach(async(tr)=>{  
-                            if(tr=Trab){
-                                console.log("I: "+i)
-
-                                const Pend=Usuario.Pendientes.filter(Pen=>Usuario.Pendientes.indexOf(Pen)!=i)
-                                Usuario.Pendientes=Pend
-                                const Soli=Usuario.Solicitudes.filter(Soli=>Usuario.Solicitudes.indexOf(Soli)!=i)
-                                Usuario.Solicitudes=Soli
-                                if(Sel=="Aceptar"){
-                                    Usuario.update(
-                                        {
-                                            'Conexiones':Sequelize.fn('array_append', Sequelize.col('Conexiones'),Sol),
-                                            'Aceptados':Sequelize.fn('array_append', Sequelize.col('Aceptados'), Trab),
-                                        })
-                                }
-                                await Usuario.save()
-                                
-                                
-                                Usuario.update(
-                                {
-                                    'Solicitantes':Sequelize.fn('array_remove', Sequelize.col('Solicitantes'), Usuario.Solicitantes[2]),
-                                    'Pendientes':Sequelize.fn('array_remove', Sequelize.col('Pendientes'), tr)
-                                },{'where':{'id': i-1}})
-                        
-                            }
-                         })
-                    }
-            })
-            */
-            /*
-            Usuario.Pendientes.forEach((Trabajo)=>{
-                try{
-                    i++
-                    Usuario.Solicitantes.forEach((Solicitante)=>{
-                        if(Sol==Solicitante && Trab==Trabajo){
-                            Aux.forEach((aux)=>{
-                                if(aux.Nombre==Sol && aux.Trabajo==Trab){
-                                    debug.log("Aux")
-                                    if(Sel=="Aceptar"){
-                                        aux.update(
-                                            {
-                                                'Conexiones':Sequelize.fn('array_append', Sequelize.col('Conexiones'), Usuario.Nombre)
-                                            })                                        
-                                    }
-                                    aux.update(
-                                        {
-                                            'Solicitudes':Sequelize.fn('array_remove', Sequelize.col('Solicitudes'), Trabajo)
-                                        },{'where':{'id': i-1}})
-                                }
-                            })
-                            if(Sel=="Aceptar"){
-                                Usuario.update(
-                                    {
-                                        'Conexiones':Sequelize.fn('array_append', Sequelize.col('Conexiones'), Trabajo),
-                                        'Aceptados':Sequelize.fn('array_append', Sequelize.col('Aceptados'), Solicitante),
-                                    })
-                            }
-                            console.log("agrsdvc")
-                            Usuario.update(
-                                {
-                                    'Solicitantes':Sequelize.fn('array_remove', Sequelize.col('Solicitantes'), Solicitante),
-                                    'Pendientes':Sequelize.fn('array_remove', Sequelize.col('Pendientes'), Solicitante)
-                                },{'where':{'d': i-1}})
-                        }
-                    })
-                }
-                catch(err){
-                    console.log(err)
-                }
-                
-            })*/
-
-
+            console.log("S: : "+Usuario.Solicitantes)          
     res.redirect('/Solicitantes')    
 })
 app.get('/Solicitudes',async(req,res)=>{
@@ -480,7 +453,88 @@ app.get('/Conexiones',async(req,res)=>{
         }
     })    
 })
+app.get('/Consultas',async(req,res)=>{
+    const Consultas=await db.Consultas.findAll({
+        order : [
+            ['id', 'DESC']
+        ]
+    });
+    res.render('Consultas',{
+        consulta:Consultas,
+        Tipo:req.session.usuario.Tipo
+    })
+})
+app.get('/CrearConsulta',(req,res)=>{
+    res.render('Crear Consultas')
+})
+app.post('/CrearConsulta',async(req,res)=>{
+    const asunto=req.body.consulta_asunto
+    const desc=req.body.consulta_descripcion
+    await db.Consultas.Crear(req.session.usuario.Nombre,asunto,desc)
+    if(req.session.usuario.Tipo=='Freelancer'){
+        res.redirect('/Main')
+    }
+    else{
+        res.redirect('/Main_cliente')    
+    }})
+app.get('/Consultas/:id',async(req,res)=>{
+    res.render('Responder',{
+        id: req.params.id
+    })
+})
+app.post('/Consultas/:id',async(req,res)=>{
+    const respuesta=req.body.consulta_respuesta
+    const id=req.params.id
+    const Cons=await db.Consultas.findOne({
+        where:{
+            id:id
+        }
+    })
+    Cons.update({
+        Respuesta:respuesta
+    })
+    res.redirect('/Consultas')
+})
+app.get('/Calificar',async(req,res)=>{
+    console.log(req.session.usuario)
+    const Usuario=await db.Usuario.findAll({
+        order : [
+            ['id', 'DESC']
+        ]
+    });
+    res.render('Calificar',{
+        ses: req.session.usuario.id,
+        usuario:Usuario,
+        Tipo: req.session.usuario.Tipo
+    })
+})
+app.post('/Calificar',async(req,res)=>{
+    const Usuario=await db.Usuario.findAll()
 
+    Usuario.forEach(async(usuario)=>{
+        usuario.calificar(req,db)
+    })
+    if(req.session.usuario.Tipo=='Freelancer'){
+        res.redirect('/Main')
+    }
+    else{
+        res.redirect('/Main_cliente')    
+    }    
+})
+app.get('/Calificaciones/:UsID',async(req,res)=>{
+    const UsID=req.params.UsID
+    const Calificacion=await db.Calificacion.findAll()
+    const Usuarios=await db.Usuario.findOne({
+        where: {
+            id: UsID
+        }
+    })
+    res.render('Calificaciones',{
+        calificacion: Calificacion,
+        ID: UsID,
+        Nombre: Usuarios.Nombre
+    })
+})
 app.get('/Chat',(req,res)=>{
     res.render('Chat')
 })

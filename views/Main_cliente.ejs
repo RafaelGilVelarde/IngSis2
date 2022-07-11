@@ -18,11 +18,11 @@
         <% } %>
         
         <h2>Que deseas hacer hoy?</h2>
-        <div class="container-fluid">
-            <form method="post" action="/Main">
-                <button type="submit" class="btn btn-success" name="sel" value=1>Contratar Trabajos</button>
-            </form>
-        </div>
+
+        <form method="post" action="/Main">
+            <button type="submit" class="btn btn-success" name="sel" value=1>Contratar Trabajos</button>
+        </form>
+
 
         <form method="post" action="/Main">
             <button type="submit" class="btn btn-success" name="sel" value=4>Conexiones</button>
@@ -30,6 +30,12 @@
 
         <form method="post" action="/Main">
             <button type="submit" class="btn btn-success" name="sel" value=5>Solicitudes</button>
+        </form>
+        <form method="post" action="/Main">
+            <button type="submit" class="btn btn-success" name="sel" value=7>Consultas</button>
+        </form>
+        <form method="post" action="/Main">
+            <button type="submit" class="btn btn-success" name="sel" value=8>Calificar</button>
         </form>
     </body>
 </html>
